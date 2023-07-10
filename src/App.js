@@ -32,7 +32,7 @@ function Welcome(props) {
     <div className='background'>
       <div className='container'>
         <img className='title' src={imgLogo}></img>
-        <form className='startButton' onSubmit={event => {
+        <form className='startButton' onClick={event => {
             event.preventDefault()
             console.log("play Sound")
             props.onStart()
@@ -65,7 +65,6 @@ function Card(props) {
     }}>
       <div className='text-wrap'>
         <h1>{props.title}</h1>
-        {/* <p>순발력이 중요함</p> */}
       </div>
       <input value="" type="submit"/>
       <div className='imgCover1'>
