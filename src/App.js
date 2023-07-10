@@ -39,7 +39,7 @@ function Welcome(props) {
           }}>
           <input type="submit" value="Start!"></input>
         </form>
-        <div className='user'>
+        <div className='user' >
           <img title="눌러바" onClick={()=>{
             setUser1Img(charactorList[Math.floor(Math.random() * 6)])
           }} className='userbunny1' src={user1Img}></img>
