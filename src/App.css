@@ -84,13 +84,17 @@ html, body, #root,.background, .container{
 	max-width: 280px;
 	overflow: hidden;
 	display: inline-block;
-	margin-top:150px;
+	margin-top:50px;
 	box-shadow: 0 20px 35px rgba(0,0,0,0.3);
 	transform: scale(1);
   display: inline-block;
 }
 .card-box img{
   height:329px;
+  transition: 0.5s;
+}
+.card-box img:hover{
+  transform: rotate(-30deg);
 }
 .card-box:hover{
 	transform: scale(0.95);
@@ -269,14 +273,48 @@ video {
   margin-left: 20px;
 }
 .search{
-  border-radius: 100px;
-  padding: 10px;
-  font-size: 18px;
+  width: 65px;
+  border-radius: 15px;
+  padding: 20px;
+  font-size: 22px;
   border: none;
-  background-color: rgba(255, 255, 255, 0.407);
-  color: white;
+  background-color: white;
+  color: black;
   display: block;
-  margin: auto;
-  top: 40px;
+  margin: 50px auto 0 auto;
+  box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.529);
+  transition: 0.5s;
+}
+.search:hover{
+  width: 300px;
+}
+.search:focus{
+  width: 250px;
+}
+
+
+
+.luckCat{
+  top: 690px;
+  transition: 0.5s;
+}
+
+.luckCat:hover{
+  top: 500px;
+}
+.backpointer{
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(65, 65, 65);
+}
+.pointer {
+  position: absolute;
+  background-color: rgb(108, 12, 31);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  left: -15px;
+  top: -15px;
 
 }
