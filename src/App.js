@@ -78,6 +78,7 @@ function Choose(props) {
     <div className='background'>
       <div className='container alignContainer'>
         <img className='title' src={imgLogo}></img>
+        <input placeholder='검색' className='search'/>
         <Card idnum='0' onGamefunc={props.onGame} imgLink={scissor} title={"가위바위보"}/>
         <Card idnum='1' onGamefunc={props.onGame} imgLink={dollar} title={"동전뒤집기"}/>
         <Card idnum='2' onGamefunc={props.onGame} imgLink={location} title={"순발력게임"}/>
@@ -87,12 +88,12 @@ function Choose(props) {
   );
 }
 function Flip(props) {
-  const [cnt, setCnt] = useState(4);
+  const [cnt, setCnt] = useState(4.5);
   const [rand, setRand] = useState(Math.floor(Math.random() * 2))
   useEffect(() => {
     const id = setInterval(() => {
-      setCnt(cnt => cnt - 1); 
-    }, 1000);
+      setCnt(cnt => cnt - 0.5); 
+    }, 500);
     if(cnt === 0){
       swal(rand?"앞면!":"뒷면!", {
         buttons: {
