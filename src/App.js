@@ -15,8 +15,13 @@ import file from './file.png';
 import sphere from './sphere.png';
 import flipVideo1 from "./0001-0224.mp4";
 import flipVideo2 from "./0001-0225.mp4";
+import catFront from "./catfront.jpg";
+import catBack from "./catback.jpg";
+import catWhy from "./catwhy.jpg";
+import swal from 'sweetalert';
 
 function Welcome(props) {
+  // const [play] = useSound(boopSfx);
   const [user1Img, setUser1Img] = useState(imgUser1)
   const [user2Img, setUser2Img] = useState(imgUser2)
   // const [name1, setName1] = useState(document.getElementById('userInput1'))
@@ -29,21 +34,22 @@ function Welcome(props) {
         <img className='title' src={imgLogo}></img>
         <form className='startButton' onSubmit={event => {
             event.preventDefault()
+            console.log("play Sound")
             props.onStart()
           }}>
           <input type="submit" value="Start!"></input>
         </form>
-        <div className='user'>
+        <div className='user' >
           <img title="눌러바" onClick={()=>{
             setUser1Img(charactorList[Math.floor(Math.random() * 6)])
           }} className='userbunny1' src={user1Img}></img>
-          <input id='userInput1' placeholder='캐릭터 선택' type='text'></input>
+          <input id='userInput1' placeholder='이름' type='text'></input>
         </div>
         <div className='user'>
           <img title="눌러바" onClick={()=>{
             setUser2Img(charactorList[Math.floor(Math.random() * 6)])
           }} className='userbunny2' src={user2Img}></img>
-          <input id='userInput2' placeholder='캐릭터 선택' type='text'></input>
+          <input id='userInput2' placeholder='이름' type='text'></input>
         </div>
       </div>
     </div>
@@ -82,14 +88,40 @@ function Choose(props) {
   );
 }
 function Flip(props) {
-  if (Math.floor(Math.random() * 2)){
+  const [cnt, setCnt] = useState(4);
+  const [rand, setRand] = useState(Math.floor(Math.random() * 2))
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCnt(cnt => cnt - 1); 
+    }, 1000);
+    if(cnt === 0){
+      swal(rand?"앞면!":"뒷면!", {
+        buttons: {
+          cancel: "메뉴 화면으로",
+        },
+        icon: rand?catFront:catBack,
+      })
+      .then((value) => {
+        switch (value) {
+          default:
+            swal("돌아왔습니다");
+            props.setmode("CHOOSE")
+        }
+      });
+    }
+    return () => {
+      clearInterval(id);
+    }
+  }, [cnt]);
+  if (rand){
     window.localStorage.setItem('FLIP', '앞면')
+    
     return (
-      <video onClick={()=>{
-        console.log("hello world")
-      }} autoPlay muted>
-        <source src={flipVideo1} type="video/mp4"/>
-      </video>
+        <video onClick={()=>{
+          console.log("hello wrold")
+        }} autoPlay muted>
+          <source src={flipVideo1} type="video/mp4"/>
+        </video>
     );
   } else {
     window.localStorage.setItem('FLIP', '뒷면')
@@ -125,7 +157,7 @@ function Speed(props) {
   const [userB, setUserB] = useState();
   const [decrease, setDecrease] = useState(0.05)
   const [nextTurn, setNextTurn] = useState("시작하기");
-
+  const [getBack, setGetBack] = useState("돌아가기");
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -161,6 +193,27 @@ function Speed(props) {
             setNextTurn("")
             setVisibleIndex(Math.floor(Math.random() * 2))
           }} className='strtButton'>{nextTurn}</h1>
+          <h1 onClick={()=>{
+            swal("돌아가시겠습니까?", {
+              buttons: {
+                catch: {
+                  text: "계속 할래용",
+                  value: "catch",
+                },
+                cancel: "메뉴 화면으로",
+              },
+              icon: catWhy,
+            })
+            .then((value) => {
+              switch (value) {
+                case "catch":
+                  break;
+                default:
+                  swal("돌아왔습니다");
+                  props.setmode("CHOOSE")
+              }
+            });
+          }} className='backButton'>{getBack}</h1>
         </div>
       </div>
     </div>
@@ -202,7 +255,30 @@ function Paper(props) {
       <div className='container'>
         <div className='alignContainer'>
           <h1 className='timer' id='paperScore'>{score}</h1>
-          <h1 className='timer' id='paperScore1'>{(score/(200000-count)*1000).toFixed(2)}</h1>
+          <h1 onClick={()=>{
+            swal("돌아가시겠습니까?", {
+              buttons: {
+                catch: {
+                  text: "계속 할래용",
+                  value: "catch",
+                },
+                cancel: "메뉴 화면으로",
+              },
+              icon: catWhy,
+            })
+            .then((value) => {
+              switch (value) {
+                case "catch":
+                  break;
+                default:
+                  swal("돌아왔습니다");
+                  props.setmode("CHOOSE")
+              }
+            });
+          }} className='timer' id='paperScore1'>{(score/(200000-count)*1000).toFixed(2)==0?
+                                                "돌아가기":
+                                                (score/(200000-count)*1000).toFixed(2)}
+          </h1>
           <img className='paperImg' src={handList[randInt]}/>
           <div className='alignContainer'>
             <PaperBTN onclick={()=>{
@@ -269,14 +345,16 @@ function Record(props) {
         <Card1 onclick={()=>{}} keyValue='SPEED' idnum='2' imgLink={location} title={"순발력게임"}/>
         <Card1 onclick={()=>{
           props.setmode('CHOOSE')
-        }} keyValue='' idnum='3' imgLink={folder} title={"대전기록지"}/>
+        }} keyValue='BACK' idnum='3'  imgLink={folder} title={"대전기록지"}/>
       </div>
     </div>
   );
 }
 
 function App() {
+  
   const [mode, setMode] = useState("WELCOME");
+  window.localStorage.setItem('BACK', "돌아가기")
   let content;
   if (mode === "WELCOME"){
     content = <Welcome onStart={() => {
@@ -300,13 +378,13 @@ function App() {
     }}/>;
   }
   else if (mode === "FLIP"){
-    content = <Flip/>;
+    content = <Flip setmode={setMode}/>;
   }
   else if (mode === "PAPER"){
-    content = <Paper/>;
+    content = <Paper setmode={setMode}/>;
   }
   else if (mode === "FAST"){
-    content = <Speed/>
+    content = <Speed setmode={setMode}/>
   }
   else if (mode === "RECORD"){
     content = <Record setmode={()=>setMode("CHOOSE")}/>
