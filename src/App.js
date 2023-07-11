@@ -111,7 +111,7 @@ function Choose(props) {
   const activeButton = () => {
     alert(`${inputText} 입력 완료`);
   } 
-  const activeEnter = (e) => {
+  const activeEnter = (e) => { 
     if(e.key === "Enter") {
       activeButton();
     }
