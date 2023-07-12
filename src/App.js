@@ -18,6 +18,7 @@ import flipVideo2 from "./0001-0225.mp4";
 import catFront from "./catfront.jpg";
 import catBack from "./catback.jpg";
 import catWhy from "./catwhy.jpg";
+import luckcat from "./luckcat.jpg";
 import swal from 'sweetalert';
 
 function Welcome(props) {
@@ -32,7 +33,7 @@ function Welcome(props) {
     <div className='background'>
       <div className='container'>
         <img className='title' src={imgLogo}></img>
-        <form className='startButton' onSubmit={event => {
+        <form className='startButton' onClick={event => {
             event.preventDefault()
             console.log("play Sound")
             props.onStart()
@@ -57,43 +58,98 @@ function Welcome(props) {
 }
 
 function Card(props) {
-  return (
-    <form id={props.idnum} className='card-box' onSubmit={event => {
-      event.preventDefault()
-      props.onGamefunc(event.target.id)
-      console.log(event.target.id)
-    }}>
-      <div className='text-wrap'>
-        <h1>{props.title}</h1>
-        {/* <p>순발력이 중요함</p> */}
-      </div>
-      <input value="" type="submit"/>
-      <div className='imgCover1'>
-        <img src={props.imgLink}/>
-      </div>
-  </form>
-  );
+  let desc = 0
+  if (!(props.inputText)) {
+    return (
+      <form id={props.idnum} className='card-box' onSubmit={event => {
+        event.preventDefault()
+        props.onGamefunc(event.target.id)
+        console.log(event.target.id)
+      }}>
+        <div className='text-wrap'>
+          <h1>{props.title}</h1>
+        </div>
+        <input value="" type="submit"/>
+        <div className='imgCover1'>
+          <img src={props.imgLink}/>
+        </div>
+    </form>
+    );
+  }
+  else if (props.inputText[0]==props.title[0]){
+    return (
+      <form id={props.idnum} className='card-box' onSubmit={event => {
+        event.preventDefault()
+        props.onGamefunc(event.target.id)
+        console.log(event.target.id)
+      }}>
+        <div className='text-wrap'>
+          {
+              [...props.inputText].forEach(char => {
+                console.log("통과 chatr:", char)
+                desc = props.title.indexOf(char)
+                return false
+                
+              }
+            )
+          }
+            {console.log(desc)}
+            <h1 style={{display:"inline"}}><span style={{backgroundColor:"black"}}>{(props.title.substring(0,desc+1))}</span>{(props.title.substring(desc+1,5))}</h1>
+            <h1></h1>
+        </div>
+        <input value="" type="submit"/>
+        <div className='imgCover1'>
+          <img src={props.imgLink}/>
+        </div>
+    </form>
+    );
+  }
 }
 function Choose(props) {
+  const [inputText, setInputText] = useState("");
+  const [haveClick, setHaveClick] = useState(false)
+  const activeButton = () => {
+    alert(`${inputText} 입력 완료`);
+  }  
+  const activeEnter = (e) => { 
+    if(e.key === "Enter") {
+      activeButton();
+    }
+  }
   return (
     <div className='background'>
       <div className='container alignContainer'>
-        <img className='title' src={imgLogo}></img>
-        <Card idnum='0' onGamefunc={props.onGame} imgLink={scissor} title={"가위바위보"}/>
-        <Card idnum='1' onGamefunc={props.onGame} imgLink={dollar} title={"동전뒤집기"}/>
-        <Card idnum='2' onGamefunc={props.onGame} imgLink={location} title={"순발력게임"}/>
-        <Card idnum='3' onGamefunc={props.onGame} imgLink={folder} title={"대전기록지"}/>
+      <img onClick={()=> {
+        swal("행운의 고양이입니다", {
+          buttons: {
+            cancel: "귀엽죠",
+          },
+          icon: luckcat,
+        })
+        setHaveClick(true)
+      }} style={{display:haveClick?"none":"block"}} src={luckcat} className='luckCat'/>
+      <input 
+      className='search'
+        type="text" 
+        placeholder="검색창"
+        onChange={(e) => setInputText(e.target.value)}
+        onKeyDown={(e) => activeEnter(e)}
+      />
+        <Card idnum='0' inputText={inputText} onGamefunc={props.onGame} imgLink={scissor} title={"가위바위보"}/>
+        <Card idnum='1' inputText={inputText} onGamefunc={props.onGame} imgLink={dollar} title={"동전뒤집기"}/>
+        <Card idnum='2' inputText={inputText} onGamefunc={props.onGame} imgLink={location} title={"순발력게임"}/>
+        <Card idnum='3' inputText={inputText} onGamefunc={props.onGame} imgLink={folder} title={"대전기록지"}/>
       </div>
     </div>
   );
 }
 function Flip(props) {
-  const [cnt, setCnt] = useState(4);
+  const [cnt, setCnt] = useState(4.5);
   const [rand, setRand] = useState(Math.floor(Math.random() * 2))
   useEffect(() => {
     const id = setInterval(() => {
-      setCnt(cnt => cnt - 1); 
-    }, 1000);
+      setCnt(cnt => cnt - 0.5); 
+    }, 500);
     if(cnt === 0){
       swal(rand?"앞면!":"뒷면!", {
         buttons: {
