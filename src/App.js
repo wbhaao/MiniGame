@@ -19,10 +19,15 @@ import catFront from "./catfront.jpg";
 import catBack from "./catback.jpg";
 import catWhy from "./catwhy.jpg";
 import luckcat from "./luckcat.jpg";
+import popcat from "./pop.gif";
+import happycat from "./happycat.gif";
 import swal from 'sweetalert';
+import soundEffect from './happysong.mp3';
+import BGM from './BGM.mp3';
 
 function Welcome(props) {
   // const [play] = useSound(boopSfx);
+  localStorage.setItem("COIN", localStorage.getItem("COIN"))
   const [user1Img, setUser1Img] = useState(imgUser1)
   const [user2Img, setUser2Img] = useState(imgUser2)
   // const [name1, setName1] = useState(document.getElementById('userInput1'))
@@ -36,7 +41,7 @@ function Welcome(props) {
         <form className='startButton' onClick={event => {
             event.preventDefault()
             console.log("play Sound")
-            props.onStart()
+            props.onStart(user2Img==user1Img)
           }}>
           <input type="submit" value="Start!"></input>
         </form>
@@ -68,10 +73,14 @@ function Card(props) {
       }}>
         <div className='text-wrap'>
           <h1>{props.title}</h1>
+          <p>{props.des}</p>
         </div>
         <input value="" type="submit"/>
         <div className='imgCover1'>
-          <img src={props.imgLink}/>
+          <img src={props.imgLink} onClick={() => {
+            props.onGamefunc(props.idnum)
+            console.log(props.idnum)
+      }}/>
         </div>
     </form>
     );
@@ -106,11 +115,64 @@ function Card(props) {
   }
 }
 function Choose(props) {
+  const [audio] = useState(new Audio(BGM));
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.1);
+  audio.volume = volume
+  function playSound() {
+    audio.play();
+    setIsPlaying(true);
+  }
+
+  function pauseSound() {
+    audio.pause();
+    setIsPlaying(false);
+  }
+
+  function stopSound() {
+    audio.pause();
+    audio.currentTime = 0;
+    setIsPlaying(false);
+  }
   const [inputText, setInputText] = useState("");
-  const [haveClick, setHaveClick] = useState(false)
+  const [price, setPrice] = useState(0);
+  const [eventName, setEventName] = useState("");
+  
   const activeButton = () => {
-    alert(`${inputText} 입력 완료`);
-  }  
+    switch(inputText){
+      case "BGM":
+        setEventName("BGM이 바뀌었습니다")
+        setPrice(10000)
+        break;
+      case "EASTER":
+        setEventName("시작화면에서 캐릭터를 똑같이 맞추면")
+        setPrice(5000)
+        break;
+      case "BACK":
+        setEventName("BACKGORUND가 바뀌었습니다")
+        setPrice(5000)
+        break;
+      case "SPECIAL":
+        setEventName("SPECIAL")
+        setPrice(50000)
+        break;
+    }
+    if (localStorage.getItem("COIN")>=price){
+      localStorage.setItem("COIN", localStorage.getItem("COIN")-price)
+      swal(`${eventName}`, {
+      }).then(() => {
+        setInputText("")
+      })  
+    }
+    else{ 
+      swal("돈이 부족한데", {
+      }).then(() => {
+        setInputText("")
+      })  
+    }
+    
+    
+  }
   const activeEnter = (e) => { 
     if(e.key === "Enter") {
       activeButton();
@@ -118,40 +180,78 @@ function Choose(props) {
   }
   return (
     <div className='background'>
+      <div className='coin'>🪙{localStorage.getItem("COIN")}</div>
       <div className='container alignContainer'>
+      <button className='bgmBTN1' onClick={playSound} disabled={isPlaying}>
+        Play Sound
+      </button>
+      <button className='bgmBTN2' onClick={pauseSound} disabled={!isPlaying}>
+        Pause Sound
+      </button>
       <img onClick={()=> {
-        swal("행운의 고양이입니다", {
+        swal("고양이", `코인을 모으면 다양한 곳에 사용할 수 있습니다`, {
           buttons: {
-            cancel: "귀엽죠",
+            bgm: {
+              text:"BGM 바꾸는 법",
+              value:"bgm"
+            },
+            catch: {
+              text: "특별 게임 하는 법",
+              value: "catch",
+            },
+            easter: {
+              text: "이스터에그 힌트",
+              value: "easter",
+            },
+            back: {
+              text: "배경 컬러 바꾸는 법",
+              value: "back",
+            },
           },
           icon: luckcat,
+        }).then((value) => {
+          switch (value) {
+            case "bgm":
+              swal("검색창에 BGM을 입력(ENTER)하고 10000코인을 내면 BGM을 바꿀 수 있습니다");
+              break;
+            case "catch":
+              swal("검색창에 SPECIAL을 입력(ENTER)하고 50000코인을 내면 특별 게임을 할 수 있습니다");
+              break;
+            case "easter":
+              swal("검색창에 EASTER을 입력(ENTER)하고 5000코인을 내면 힌트를 얻을 수 있습니다");
+              break;
+            case "back":
+              swal("검색창에 BACK을 입력(ENTER)하고 5000코인을 내면 배경을 바꿀 수 있습니다");
+              break;
+          }
         })
-        setHaveClick(true)
-      }} style={{display:haveClick?"none":"block"}} src={luckcat} className='luckCat'/>
-      <input 
-      className='search'
+      }}  src={luckcat} className='luckCat'/>
+      <input
+        className='search'
         type="text" 
-        placeholder="검색창"
+        placeholder="search it 🔍"
         onChange={(e) => setInputText(e.target.value)}
         onKeyDown={(e) => activeEnter(e)}
       />
-        <Card idnum='0' inputText={inputText} onGamefunc={props.onGame} imgLink={scissor} title={"가위바위보"}/>
-        <Card idnum='1' inputText={inputText} onGamefunc={props.onGame} imgLink={dollar} title={"동전뒤집기"}/>
-        <Card idnum='2' inputText={inputText} onGamefunc={props.onGame} imgLink={location} title={"순발력게임"}/>
-        <Card idnum='3' inputText={inputText} onGamefunc={props.onGame} imgLink={folder} title={"대전기록지"}/>
+        <Card idnum='0' inputText={inputText} onGamefunc={props.onGame} imgLink={scissor} title={"가위바위보"} des={"점수당 60코인"}/>
+        <Card idnum='1' inputText={inputText} onGamefunc={props.onGame} imgLink={dollar} title={"동전뒤집기"} des={"맞추면 코인4배"}/>
+        <Card idnum='2' inputText={inputText} onGamefunc={props.onGame} imgLink={location} title={"반속테스트"} des={"빠른만큼 코인"}/>
+        <Card idnum='3' inputText={inputText} onGamefunc={props.onGame} imgLink={folder} title={"대전기록지"} des={""}/>
       </div>
     </div>
   );
-}
+  }
 function Flip(props) {
   const [cnt, setCnt] = useState(4.5);
-  const [rand, setRand] = useState(Math.floor(Math.random() * 2))
+  const [a, setA] = useState(true);
+  const rand = props.rand
   useEffect(() => {
     const id = setInterval(() => {
       setCnt(cnt => cnt - 0.5); 
     }, 500);
     if(cnt === 0){
-      swal(rand?"앞면!":"뒷면!", {
+      
+      swal(rand==props.isfront?"맞췄습니다":"틀렸습니다", {
         buttons: {
           cancel: "메뉴 화면으로",
         },
@@ -169,7 +269,14 @@ function Flip(props) {
       clearInterval(id);
     }
   }, [cnt]);
+  if (a){
+    console.log("in")
+    
+    setA(false)
+  }
+  
   if (rand){
+    
     window.localStorage.setItem('FLIP', '앞면')
     
     return (
@@ -190,66 +297,61 @@ function Flip(props) {
     );
   }
 }
-function Circle(props) {
-  if (props.visible){
-    return (
-      <div onClick={()=>props.onclick()} style={{visibility:'visible'}} className='circleBTN'>
-        <h1>눌러</h1>
-      </div>
-    );
-  }else{
-    return (
-      <div onClick={()=>props.onclick()} style={{visibility:'hidden'}} className='circleBTN'>
-        <h1>눌러</h1>
-      </div>
-    );
-  }
-  
-}
-function Speed(props) {
-  // 첫번째 사람이 클릭하고 다음 사람이 클릭해서 기록 비교
-  const [count, setCount] = useState(0.00);
-  const [userA, setUserA] = useState();
-  const [userB, setUserB] = useState();
-  const [decrease, setDecrease] = useState(0.05)
-  const [nextTurn, setNextTurn] = useState("시작하기");
-  const [getBack, setGetBack] = useState("돌아가기");
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      setCount(count => (count - decrease).toFixed(2)); 
-    }, 50);
-    if(Math.ceil(count) === 0){
-      clearInterval(id);
+const Speed = (props) => {
+	const [state, setState] = useState("waiting");
+	const [message, setMessage] = useState("클릭해서 시작하세요.");
+	const [result, setResult] = useState([99999]);
+	const timeout = useRef(null);
+	const startTime = useRef();
+	const endTime = useRef();
+	const onClickScreen = () => {
+		if (state === "waiting") {
+			setState("ready");
+			setMessage("초록색이 되면 클릭하세요.");
+			timeout.current = setTimeout(() => {
+				setState("now");
+				setMessage("지금 클릭!");
+				startTime.current = new Date();
+			}, Math.floor(Math.random() * 1000) + 2000);
+		} else if (state == "ready") { // 성급하게 클릭
+			clearTimeout(timeout.current);
+			setState("waiting");
+			setMessage("성급하셨군요!");
+		} else if (state == "now") { // 반응속도 체크
+      endTime.current = new Date();
+			setState("waiting");
+			setMessage("클릭해서 시작하세요."); 
+			setResult([endTime.current - startTime.current]);
+      console.log(result)
+      // 400보다 작은 만큼 코인
+      if (result.reduce((a, c) => a + c) < 400){
+        localStorage.setItem("COIN", Number(localStorage.getItem("COIN"))+(400-result.reduce((a, c) => a + c)))
+      }
+      if (result.reduce((a, c) => a + c) && result.reduce((a, c) => a + c) < localStorage.getItem("SPEED")){
+        console.log(result, "asdsad")
+        localStorage.setItem("SPEED", result[0])
+      }
     }
-    return (()=>
-      clearInterval(Math.ceil(id)));
-  }, [count]);
-  const [visibleIndex, setVisibleIndex] = useState(-1)
-  return (
-    <div className='background'>
-      <div className='container'>
-        <div className='alignContainer'>
-          <h1 className='timer'>{(6-count).toFixed(2)}</h1>
-          <Circle onclick={()=>{
-            window.localStorage.setItem('SPEED', (6-count).toFixed(2))
-            setDecrease(0)
-            setNextTurn("다시시작")
-          }} visible={visibleIndex==0?true:false} />
-          <Circle visible={false} />
-          <Circle onclick={()=>{
-            window.localStorage.setItem('SPEED', (6-count).toFixed(2))
-            setDecrease(0)
-            setNextTurn("다시시작")
-          }}e visible={visibleIndex==1?true:false} />
-          {/*다음차례*/}
-          <h1 onClick={()=>{
-            setCount(6)
-            setDecrease(0.05)
-            setNextTurn("")
-            setVisibleIndex(Math.floor(Math.random() * 2))
-          }} className='strtButton'>{nextTurn}</h1>
-          <h1 onClick={()=>{
+	}
+	const renderAverage = () => {
+		return result.length === 0
+		? null 
+		: <div>시간 : {result.reduce((a, c) => a + c)}ms</div>
+	};
+
+	const Reset = () => {
+				setResult([99999]);
+			}
+	return (
+		<div className='background'>
+      <div className='container alignContainer'>
+        <div id="screen" className={`${state}`} onClick={onClickScreen}>
+          {message}
+        </div>		
+        <div className="avgScore">{renderAverage()}</div>
+        <button className="resetBTN" onClick={Reset}>RESET</button>
+        <h1 onClick={()=>{
             swal("돌아가시겠습니까?", {
               buttons: {
                 catch: {
@@ -261,6 +363,13 @@ function Speed(props) {
               icon: catWhy,
             })
             .then((value) => {
+              if (result.reduce((a, c) => a + c) && result.reduce((a, c) => a + c) < localStorage.getItem("SPEED")){
+                console.log(result, "asdsad")
+                localStorage.setItem("SPEED", result[0])
+              }
+              if (result.reduce((a, c) => a + c) < 400){
+                localStorage.setItem("COIN", Number(localStorage.getItem("COIN"))+(400-result.reduce((a, c) => a + c)))
+              }
               switch (value) {
                 case "catch":
                   break;
@@ -269,11 +378,11 @@ function Speed(props) {
                   props.setmode("CHOOSE")
               }
             });
-          }} className='backButton'>{getBack}</h1>
-        </div>
+          }} className='backBTN'>돌아가기
+          </h1>
       </div>
     </div>
-  );
+	)
 }
 // function App(props) {
 //   return (
@@ -344,6 +453,9 @@ function Paper(props) {
               }
               else{
                 window.localStorage.setItem('SCISSOR', score)
+                window.localStorage.setItem(
+                  'COIN', 
+                  Number(window.localStorage.getItem('COIN'))+score*60)
                 setScore(0)
                 setCount(200000)
               }
@@ -355,6 +467,9 @@ function Paper(props) {
               }
               else{
                 window.localStorage.setItem('SCISSOR', score)
+                window.localStorage.setItem(
+                  'COIN', 
+                  Number(window.localStorage.getItem('COIN'))+score*60)
                 setScore(0)
                 setCount(200000)
               }
@@ -366,6 +481,9 @@ function Paper(props) {
               }
               else{
                 window.localStorage.setItem('SCISSOR', score)
+                window.localStorage.setItem(
+                  'COIN', 
+                  Number(window.localStorage.getItem('COIN'))+score*60)
                 setScore(0)
                 setCount(200000)
               }
@@ -378,7 +496,7 @@ function Paper(props) {
 }
 function Card1(props) {
   return (
-    <div onClick={
+    <div style={{marginTop:"165px"}} onClick={
       ()=>{props.onclick('CHOOSE')}
     } className='card-box'>
       <div className='text-wrap'>
@@ -398,7 +516,7 @@ function Record(props) {
         <img className='title' src={imgLogo}></img>
         <Card1 onclick={()=>{}} keyValue='SCISSOR' idnum='0' imgLink={scissor} title={"가위바위보"}/>
         <Card1 onclick={()=>{}} keyValue='FLIP' idnum='1' imgLink={dollar} title={"동전뒤집기"}/>
-        <Card1 onclick={()=>{}} keyValue='SPEED' idnum='2' imgLink={location} title={"순발력게임"}/>
+        <Card1 onclick={()=>{}} keyValue='SPEED' idnum='2' imgLink={location} title={"반속테스트"}/>
         <Card1 onclick={()=>{
           props.setmode('CHOOSE')
         }} keyValue='BACK' idnum='3'  imgLink={folder} title={"대전기록지"}/>
@@ -406,16 +524,54 @@ function Record(props) {
     </div>
   );
 }
-
-function App() {
+function Easter(){
+  const [audio] = useState(new Audio(soundEffect));
+  const [isPlaying, setIsPlaying] = useState(false);
+  // function playSound() {
+  //   audio.play();
+  //   setIsPlaying(true);
+  // }
   
+  // function pauseSound() {
+  //   audio.pause();
+  //   setIsPlaying(false);
+  // }
+  
+  // function stopSound() {
+  //   audio.pause();
+  //   audio.currentTime = 0;
+  //   setIsPlaying(false);
+  // }
+  setTimeout(()=> audio.pause(), 2999)
+  audio.play();
+  audio.volume = 0.2;
+  return (
+    <div>
+      <img src={popcat}/>
+      <img src={happycat}/>
+      <img src={popcat}/>
+    </div>
+  );
+}
+function App() {
+  const [isFront, setIsFront] = useState(false)
   const [mode, setMode] = useState("WELCOME");
+  const rand = Math.floor(Date.now() / 1000)%2
   window.localStorage.setItem('BACK', "돌아가기")
   let content;
   if (mode === "WELCOME"){
-    content = <Welcome onStart={() => {
-      setMode('CHOOSE');
+    content = <Welcome onStart={(isEaster) => {
+      if (isEaster){
+        setMode('EASTER');
+        setTimeout(() => setMode('CHOOSE'), 3000);
+      }
+      else{
+        setMode('CHOOSE');
+      }
     }}/>;
+  }
+  else if(mode === "EASTER"){
+    content = <Easter />
   }
   else if (mode === "CHOOSE"){
     content = <Choose onGame={(int) => {
@@ -423,7 +579,31 @@ function App() {
         setMode('PAPER');
       }
       else if (int==1){
-        setMode('FLIP');
+        swal("앞? 뒤?", {
+          buttons: {
+            bgm: {
+              text:"앞",
+              value:"front"
+            },
+            catch: {
+              text: "뒤",
+              value: "back",
+            },
+          },
+          icon: luckcat,
+        }).then((value) => {
+          switch (value) {
+            case "front":
+              setIsFront(true)
+              setMode('FLIP');
+              break;
+            case "back":
+              setIsFront(false)
+              setMode('FLIP');
+              break;
+          }
+        })
+        
       }
       else if (int==2){
         setMode('FAST');
@@ -434,7 +614,15 @@ function App() {
     }}/>;
   }
   else if (mode === "FLIP"){
-    content = <Flip setmode={setMode}/>;
+    if (isFront==Boolean(rand)){
+      console.log("right")
+      localStorage.setItem("COIN", Number(localStorage.getItem("COIN"))*2)
+    }
+    else{
+      console.log("wrong")
+      localStorage.setItem("COIN", Number(localStorage.getItem("COIN"))/2)
+    }
+    content = <Flip setmode={setMode} isfront={isFront} rand={rand}/>;
   }
   else if (mode === "PAPER"){
     content = <Paper setmode={setMode}/>;
