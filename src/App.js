@@ -24,10 +24,12 @@ import happycat from "./happycat.gif";
 import swal from 'sweetalert';
 import soundEffect from './happysong.mp3';
 import BGM from './BGM.mp3';
-
+import specialBGM from './specialBGM.mp3';
+if (localStorage.getItem("COIN")==null){
+  localStorage.setItem("COIN", 1000)
+}
 function Welcome(props) {
   // const [play] = useSound(boopSfx);
-  localStorage.setItem("COIN", localStorage.getItem("COIN"))
   const [user1Img, setUser1Img] = useState(imgUser1)
   const [user2Img, setUser2Img] = useState(imgUser2)
   // const [name1, setName1] = useState(document.getElementById('userInput1'))
@@ -115,7 +117,11 @@ function Card(props) {
   }
 }
 function Choose(props) {
-  const [audio] = useState(new Audio(BGM));
+  const [audio] = useState(new Audio(
+    (localStorage.getItem("BGM"))==null
+    ?BGM
+    :specialBGM
+    ));
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.1);
   audio.volume = volume
@@ -135,43 +141,57 @@ function Choose(props) {
     setIsPlaying(false);
   }
   const [inputText, setInputText] = useState("");
-  const [price, setPrice] = useState(0);
-  const [eventName, setEventName] = useState("");
-  
+  let price = 0;
+  let setEventName = "";
+  let func = () => {};
+  const [coins, setCoins] = useState(localStorage.getItem("COIN"));
   const activeButton = () => {
     switch(inputText){
       case "BGM":
-        setEventName("BGM이 바뀌었습니다")
-        setPrice(10000)
+        setEventName = "BGM이 바뀌었습니다"
+        price = 10000
+        func = () => {
+          console.log("bgm 바뀨ㅣㅁ")
+          localStorage.setItem("BGM", specialBGM)
+          console.log(localStorage.getItem("BGM"))
+        }
         break;
       case "EASTER":
-        setEventName("시작화면에서 캐릭터를 똑같이 맞추면")
-        setPrice(5000)
+        setEventName = "시작화면에서 캐릭터를 똑같이 맞추면"
+        price = 5000
+        func = () => {
+          
+        }
         break;
       case "BACK":
-        setEventName("BACKGORUND가 바뀌었습니다")
-        setPrice(5000)
+        setEventName = "BACKGORUND가 바뀌었습니다"
+        price = 5000
+        func = () => {
+          localStorage.setItem("BACK", "redbackground")
+        }
         break;
       case "SPECIAL":
-        setEventName("SPECIAL")
-        setPrice(50000)
+        setEventName = "SPECIAL"
+        price = 50000
+        func = () => {
+          window.location.replace('https://flappybird.io/');
+        }
         break;
     }
-    if (localStorage.getItem("COIN")>=price){
-      localStorage.setItem("COIN", localStorage.getItem("COIN")-price)
-      swal(`${eventName}`, {
+    if (Number(localStorage.getItem("COIN"))>=price){
+      localStorage.setItem("COIN", Number(localStorage.getItem("COIN"))-price)
+      setCoins(Number(localStorage.getItem("COIN")))
+      swal(`${setEventName}`, {
       }).then(() => {
-        setInputText("")
+        console.log("hello world")
+        func()
       })  
     }
     else{ 
       swal("돈이 부족한데", {
       }).then(() => {
-        setInputText("")
       })  
     }
-    
-    
   }
   const activeEnter = (e) => { 
     if(e.key === "Enter") {
@@ -180,7 +200,7 @@ function Choose(props) {
   }
   return (
     <div className='background'>
-      <div className='coin'>🪙{localStorage.getItem("COIN")}</div>
+      <div className='coin'>🪙{Number(coins).toFixed(0)}</div>
       <div className='container alignContainer'>
       <button className='bgmBTN1' onClick={playSound} disabled={isPlaying}>
         Play Sound
@@ -212,7 +232,7 @@ function Choose(props) {
         }).then((value) => {
           switch (value) {
             case "bgm":
-              swal("검색창에 BGM을 입력(ENTER)하고 10000코인을 내면 BGM을 바꿀 수 있습니다");
+              swal("BGM을 바꾸려면 새로고침 해야합니다","검색창에 BGM을 입력(ENTER)하고 10000코인을 내면 BGM을 바꿀 수 있습니다");
               break;
             case "catch":
               swal("검색창에 SPECIAL을 입력(ENTER)하고 50000코인을 내면 특별 게임을 할 수 있습니다");

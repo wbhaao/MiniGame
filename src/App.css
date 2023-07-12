@@ -277,6 +277,7 @@ video {
   padding: 20px;
   font-size: 22px;
   border: solid;
+  border-radius: 100px;
   border-color: rgb(0, 0, 0);
   background-color: white;
   color: black;
