@@ -17,6 +17,9 @@ html, body, #root,.background, .container{
   padding: 40px;
   background: linear-gradient( to right, rgb(108, 45, 203), rgba(41, 70, 226, 1));
 }
+.redbackground{
+  background: linear-gradient( to right, rgb(203, 45, 171), rgb(226, 41, 81));
+}
 .container {
   border-radius: 40px;
   background-color: rgba(0, 0, 0, 0.15);

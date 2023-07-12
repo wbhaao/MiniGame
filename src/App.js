@@ -28,6 +28,9 @@ import specialBGM from './specialBGM.mp3';
 if (localStorage.getItem("COIN")==null){
   localStorage.setItem("COIN", 1000)
 }
+if (localStorage.getItem("BACKGROUND")==null){
+  localStorage.setItem("BACKGROUND", "background")
+}
 function Welcome(props) {
   // const [play] = useSound(boopSfx);
   const [user1Img, setUser1Img] = useState(imgUser1)
@@ -37,7 +40,7 @@ function Welcome(props) {
   // const [charactorList, setCharactorList] = useState(['김규민', '안예성', '오창민', '김상윤', '최성훈', '이재현'])
   const [charactorList, setCharactorList] = useState([imgUser1, imgUser2, imgUser3, imgUser4, imgUser5, imgUser6])
   return (
-    <div className='background'>
+    <div className={`background ${localStorage.getItem("BACKGROUND")} `}>
       <div className='container'>
         <img className='title' src={imgLogo}></img>
         <form className='startButton' onClick={event => {
@@ -167,7 +170,7 @@ function Choose(props) {
         setEventName = "BACKGORUND가 바뀌었습니다"
         price = 5000
         func = () => {
-          localStorage.setItem("BACK", "redbackground")
+          localStorage.setItem("BACKGROUND", "redbackground")
         }
         break;
       case "SPECIAL":
@@ -199,7 +202,7 @@ function Choose(props) {
     }
   }
   return (
-    <div className='background'>
+    <div className={`background ${localStorage.getItem("BACKGROUND")} `}>
       <div className='coin'>🪙{Number(coins).toFixed(0)}</div>
       <div className='container alignContainer'>
       <button className='bgmBTN1' onClick={playSound} disabled={isPlaying}>
@@ -241,7 +244,7 @@ function Choose(props) {
               swal("검색창에 EASTER을 입력(ENTER)하고 5000코인을 내면 힌트를 얻을 수 있습니다");
               break;
             case "back":
-              swal("검색창에 BACK을 입력(ENTER)하고 5000코인을 내면 배경을 바꿀 수 있습니다");
+              swal("BACKGROUND를 바꾸려면 새로고침 해야합니다","검색창에 BACK을 입력(ENTER)하고 5000코인을 내면 배경을 바꿀 수 있습니다");
               break;
           }
         })
@@ -364,7 +367,7 @@ const Speed = (props) => {
 				setResult([99999]);
 			}
 	return (
-		<div className='background'>
+		<div className={localStorage.getItem("BACKGROUND")}>
       <div className='container alignContainer'>
         <div id="screen" className={`${state}`} onClick={onClickScreen}>
           {message}
@@ -436,7 +439,7 @@ function Paper(props) {
       clearInterval(Math.ceil(id)));
   }, [count]);
   return(
-    <div className='background'>
+    <div className={localStorage.getItem("BACKGROUND")}>
       <div className='container'>
         <div className='alignContainer'>
           <h1 className='timer' id='paperScore'>{score}</h1>
@@ -531,7 +534,7 @@ function Card1(props) {
 }
 function Record(props) {
   return (
-    <div className='background'>
+    <div className={localStorage.getItem("BACKGROUND")}>
       <div className='container alignContainer'>
         <img className='title' src={imgLogo}></img>
         <Card1 onclick={()=>{}} keyValue='SCISSOR' idnum='0' imgLink={scissor} title={"가위바위보"}/>
