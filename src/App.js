@@ -31,6 +31,9 @@ if (localStorage.getItem("COIN")==null){
 if (localStorage.getItem("BACKGROUND")==null){
   localStorage.setItem("BACKGROUND", "background")
 }
+if (localStorage.getItem("SPEED")==null){
+  localStorage.setItem("SPEED", 999999)
+}
 function Welcome(props) {
   // const [play] = useSound(boopSfx);
   const [user1Img, setUser1Img] = useState(imgUser1)
