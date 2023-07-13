@@ -84,7 +84,7 @@ html, body, #root,.background, .container{
 	max-width: 280px;
 	overflow: hidden;
 	display: inline-block;
-	margin-top:50px;
+	margin-top:44px;
 	box-shadow: 0 20px 35px rgba(0,0,0,0.3);
 	transform: scale(1);
   display: inline-block;
@@ -94,7 +94,7 @@ html, body, #root,.background, .container{
   transition: 0.5s;
 }
 .card-box img:hover{
-  transform: rotate(-30deg);
+  transform: rotate(-20deg);
 }
 .card-box:hover{
 	transform: scale(0.95);
@@ -273,15 +273,16 @@ video {
   margin-left: 20px;
 }
 .search{
-  width: 65px;
-  border-radius: 15px;
+  width: 117px;
   padding: 20px;
   font-size: 22px;
-  border: none;
+  border: solid;
+  border-radius: 100px;
+  border-color: rgb(0, 0, 0);
   background-color: white;
   color: black;
   display: block;
-  margin: 50px auto 0 auto;
+  margin: 20px auto 0 auto;
   box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.529);
   transition: 0.5s;
 }
@@ -295,7 +296,7 @@ video {
 
 
 .luckCat{
-  top: 690px;
+  top: 650px;
   transition: 0.5s;
 }
 
@@ -317,4 +318,89 @@ video {
   left: -15px;
   top: -15px;
 
+}
+#screen {
+  font-size: 36px;
+  font-weight: 900;
+  margin: 25px auto 0 auto;
+  width: 600px;
+  height: 50vh;
+  /* user-select: none; */
+  /* display: flex; */
+  justify-content: center;
+  padding-top: 120px;
+  border-radius: 30px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.577);
+  }
+#screen.waiting {
+  background-color: rgb(166, 194, 243);
+}
+#screen.ready {
+  background-color: rgb(217, 133, 133);
+}
+#screen.now {
+  background-color: rgb(217, 255, 167);
+}
+.avgScore{
+  position: absolute;
+  top: 230px;
+  left: 50%;
+  margin-left: -100px;
+  font-size: 25px;
+  text-align: center;
+}
+.resetBTN{
+  margin-top: 20px;
+  border-radius: 100px;
+  width: 120px;
+  font-weight: 400;
+  font-size: 18px;
+  padding: 5px;
+  transition: 0.3s;
+  height: 40px;
+  border: none;
+  box-shadow: 0 0 10px rgb(0, 0, 0);
+}
+.resetBTN:hover{
+  width: 100px;
+  background-color: rgb(255, 147, 147);
+}
+.backBTN{
+  background-color:white;
+  margin:0 auto;
+  margin-top:20px;
+  font-size:18px;
+  transition: 0.3s;
+  width: 100px;
+  padding: 5px;
+}
+.backBTN:hover{
+  width: 80px;
+  background-color: rgb(255, 147, 147);
+  margin:0 auto;
+  margin-top:20px;
+  font-size:18px;
+}
+.bgmBTN1{
+  margin-top: 10px;
+  border-radius: 5px 0px 0px 5px;
+  font-weight: 900;
+}
+.bgmBTN2{
+  margin-top: 10px;
+  border-radius: 0px 5px 5px 0px;
+  border: none;
+  font-weight: 900;
+}
+.coin{
+  font-size: 40px;
+  font-weight: 900;
+  margin-left: 50px;
+  position: absolute;
+  margin-top: 40px;
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 108);
+  border-radius: 100px;
+  padding: 5px 20px 10px 20px;
+  box-shadow: inset 0px 0px 10px rgb(255, 255, 255);
 }
