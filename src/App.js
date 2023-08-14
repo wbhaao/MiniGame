@@ -57,13 +57,11 @@ function Welcome(props) {
           <img title="눌러바" onClick={()=>{
             setUser1Img(charactorList[Math.floor(Math.random() * 6)])
           }} className='userbunny1' src={user1Img}></img>
-          <input id='userInput1' placeholder='이름' type='text'></input>
         </div>
         <div className='user'>
           <img title="눌러바" onClick={()=>{
             setUser2Img(charactorList[Math.floor(Math.random() * 6)])
           }} className='userbunny2' src={user2Img}></img>
-          <input id='userInput2' placeholder='이름' type='text'></input>
         </div>
       </div>
     </div>
